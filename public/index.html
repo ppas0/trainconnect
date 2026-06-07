@@ -1,0 +1,1384 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>TrainConnect Europe – Ein Ticket. Ganz Europa.</title>
+<meta name="description" content="Alle europäischen Zugverbindungen auf einer Plattform. Suche, vergleiche Preise und buche – von Dublin bis Rom, von Bern bis Berlin.">
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#0f1f3d">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="TrainConnect">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --navy:#0f1f3d; --navy-l:#1a2d5e; --navy-m:#162448; --navy-xl:#0a1628;
+  --gold:#c8a96e; --gold-l:#dfc28e; --gold-xl:#e8d5b0;
+  --cream:#f5f0e8; --cream-d:#ede6d9; --cream-dd:#e4dace;
+  --white:#ffffff; --green:#2d9a6b; --green-l:#e8f5ee;
+  --red:#c84b4b; --red-l:#fdeaea;
+  --blue:#2563eb; --blue-l:#eff6ff;
+  --gray:#8892a4; --gray-l:#e8ecf2; --gray-ll:#f4f6f9;
+  --r:12px; --r-lg:20px; --r-sm:8px;
+  --sh:0 4px 24px rgba(15,31,61,.1); --sh-lg:0 12px 48px rgba(15,31,61,.16);
+  --sh-xl:0 24px 80px rgba(15,31,61,.22);
+  --transition: all .2s cubic-bezier(.4,0,.2,1);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--navy);min-height:100vh;overflow-x:hidden}
+a{color:inherit;text-decoration:none}
+button{cursor:pointer;font-family:inherit}
+
+/* ═══════════ NAV ═══════════ */
+nav{background:var(--navy);height:64px;padding:0 2rem;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:200;box-shadow:0 2px 20px rgba(0,0,0,.3)}
+.logo{font-family:'DM Serif Display',serif;color:var(--gold);font-size:1.35rem;cursor:pointer;display:flex;align-items:center;gap:.5rem;white-space:nowrap}
+.logo-sub{color:rgba(245,240,232,.55);font-size:.78rem;font-family:'DM Sans',sans-serif;font-weight:300}
+.nav-links{display:flex;align-items:center;gap:.25rem}
+.nav-lnk{background:none;border:none;color:rgba(245,240,232,.75);padding:.45rem .85rem;border-radius:var(--r-sm);font-size:.85rem;transition:var(--transition)}
+.nav-lnk:hover{color:var(--gold);background:rgba(200,169,110,.1)}
+.nav-lnk.active{color:var(--gold)}
+.nav-btn{border:1.5px solid rgba(200,169,110,.4);color:var(--cream);padding:.4rem 1rem;border-radius:var(--r-sm);font-size:.85rem;background:none;transition:var(--transition)}
+.nav-btn:hover{border-color:var(--gold);color:var(--gold)}
+.nav-btn.primary{background:var(--gold);border-color:var(--gold);color:var(--navy);font-weight:600}
+.nav-btn.primary:hover{background:var(--gold-l)}
+.user-badge{display:flex;align-items:center;gap:.6rem}
+.pts{background:rgba(200,169,110,.15);border:1px solid var(--gold);color:var(--gold);font-size:.72rem;padding:.18rem .55rem;border-radius:20px}
+@media(max-width:640px){.nav-links .nav-lnk{display:none}.logo-sub{display:none}nav{padding:0 1rem}}
+
+/* ═══════════ PAGES ═══════════ */
+.page{display:none}
+.page.active{display:block}
+
+/* ═══════════ HERO ═══════════ */
+.hero{background:linear-gradient(135deg,var(--navy-xl) 0%,var(--navy) 45%,var(--navy-l) 100%);padding:4rem 1.5rem 2.5rem;text-align:center;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 70% 40%,rgba(200,169,110,.09) 0%,transparent 60%)}
+.hero::after{content:'';position:absolute;bottom:0;left:0;right:0;height:60px;background:linear-gradient(to bottom,transparent,var(--cream))}
+.hero h1{font-family:'DM Serif Display',serif;font-size:clamp(2rem,5vw,3.4rem);color:var(--white);line-height:1.12;margin-bottom:.6rem;position:relative}
+.hero h1 em{color:var(--gold);font-style:italic}
+.hero-sub{color:rgba(245,240,232,.65);font-size:1rem;margin-bottom:2rem;position:relative;max-width:520px;margin-left:auto;margin-right:auto;margin-bottom:2.5rem}
+.eu-badge{display:inline-flex;align-items:center;gap:.4rem;background:rgba(200,169,110,.12);border:1px solid rgba(200,169,110,.3);color:var(--gold-xl);font-size:.75rem;padding:.3rem .8rem;border-radius:20px;margin-bottom:1rem;position:relative}
+
+/* ═══════════ SEARCH BOX ═══════════ */
+.search-box{background:var(--white);border-radius:var(--r-lg);padding:1.75rem;max-width:900px;margin:0 auto;box-shadow:var(--sh-xl);position:relative;z-index:10}
+.search-row{display:grid;gap:.75rem;margin-bottom:.75rem}
+.search-row.r2{grid-template-columns:1fr 1fr}
+.search-row.r4{grid-template-columns:1fr 1fr 140px 90px}
+.field{display:flex;flex-direction:column;gap:.3rem;position:relative}
+.field label{font-size:.72rem;font-weight:600;color:var(--gray);text-transform:uppercase;letter-spacing:.07em}
+.field input,.field select{border:1.5px solid var(--gray-l);border-radius:var(--r-sm);padding:.65rem .85rem;font-size:.93rem;font-family:inherit;color:var(--navy);background:var(--cream);transition:var(--transition);width:100%}
+.field input:focus,.field select:focus{outline:none;border-color:var(--navy);background:var(--white);box-shadow:0 0 0 3px rgba(15,31,61,.06)}
+.swap-btn{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);background:var(--navy);color:var(--gold);border:none;width:32px;height:32px;border-radius:50%;font-size:1rem;display:flex;align-items:center;justify-content:center;z-index:5;transition:transform .3s ease;box-shadow:var(--sh)}
+.swap-btn:hover{transform:translate(-50%,-50%) rotate(180deg)}
+.search-submit{background:var(--navy);color:var(--gold);border:none;padding:.9rem 2rem;border-radius:10px;font-size:1rem;font-weight:600;width:100%;transition:var(--transition);letter-spacing:.03em;margin-top:.5rem}
+.search-submit:hover{background:var(--navy-l);transform:translateY(-1px);box-shadow:var(--sh)}
+.ac-list{position:absolute;top:calc(100% + 4px);left:0;right:0;z-index:100;background:var(--white);border:1.5px solid var(--gray-l);border-radius:var(--r-sm);overflow:hidden;box-shadow:var(--sh)}
+.ac-item{padding:.6rem .85rem;cursor:pointer;transition:background .15s;display:flex;align-items:center;gap:.5rem;font-size:.88rem}
+.ac-item:hover{background:var(--cream)}
+.ac-item .city{color:var(--gray);font-size:.78rem;margin-left:auto}
+
+/* ═══════════ POPULAR ROUTES ═══════════ */
+.popular{max-width:900px;margin:1.5rem auto;padding:0 1rem}
+.popular h3{font-size:.75rem;color:var(--gray);text-transform:uppercase;letter-spacing:.09em;margin-bottom:.65rem}
+.chips{display:flex;flex-wrap:wrap;gap:.4rem}
+.chip{background:var(--white);border:1.5px solid var(--gray-l);border-radius:var(--r-sm);padding:.42rem .85rem;cursor:pointer;font-size:.82rem;transition:var(--transition);color:var(--navy);display:flex;align-items:center;gap:.35rem}
+.chip:hover{border-color:var(--navy);background:var(--cream-d)}
+.chip-price{color:var(--green);font-weight:600;font-size:.78rem}
+
+/* ═══════════ FEATURES SECTION ═══════════ */
+.features{max-width:900px;margin:2rem auto;padding:0 1rem}
+.features-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:1rem}
+.feature-card{background:var(--white);border-radius:var(--r);padding:1.25rem;box-shadow:var(--sh);border-top:3px solid var(--gold)}
+.feature-icon{font-size:1.5rem;margin-bottom:.6rem}
+.feature-title{font-weight:600;font-size:.92rem;margin-bottom:.35rem}
+.feature-desc{color:var(--gray);font-size:.82rem;line-height:1.5}
+
+/* ═══════════ OPERATORS BAND ═══════════ */
+.ops-band{background:var(--white);border-top:1px solid var(--gray-l);border-bottom:1px solid var(--gray-l);padding:.8rem 0;overflow:hidden;position:relative}
+.ops-scroll{display:flex;gap:2rem;padding:0 2rem;white-space:nowrap;animation:scrollOps 30s linear infinite}
+.ops-scroll:hover{animation-play-state:paused}
+.op-item{display:inline-flex;align-items:center;gap:.4rem;font-size:.82rem;color:var(--gray);flex-shrink:0}
+.op-item .flag{font-size:1rem}
+@keyframes scrollOps{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+
+/* ═══════════ EU BANNER ═══════════ */
+.eu-banner{background:linear-gradient(90deg,var(--navy),var(--navy-l));color:var(--white);padding:.9rem 2rem;display:flex;align-items:center;gap:1rem;font-size:.85rem}
+.eu-banner .icon{font-size:1.4rem;flex-shrink:0}
+.eu-banner a{color:var(--gold-l);text-decoration:underline;text-underline-offset:2px}
+
+/* ═══════════ RESULTS ═══════════ */
+.rp{max-width:960px;margin:0 auto;padding:1.5rem 1rem}
+.rp-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:1.25rem;gap:1rem;flex-wrap:wrap}
+.rp-title{font-family:'DM Serif Display',serif;font-size:1.5rem}
+.rp-meta{color:var(--gray);font-size:.82rem;margin-top:.2rem}
+.filter-bar{display:flex;gap:.4rem;margin-bottom:.9rem;flex-wrap:wrap}
+.filter-btn{background:var(--white);border:1.5px solid var(--gray-l);padding:.38rem .85rem;border-radius:var(--r-sm);font-size:.8rem;font-family:inherit;color:var(--navy);transition:var(--transition)}
+.filter-btn.act{background:var(--navy);color:var(--gold);border-color:var(--navy)}
+
+/* ── PRICE CALENDAR ── */
+.cal-wrap{background:var(--white);border-radius:var(--r);padding:1.25rem;margin-bottom:1rem;box-shadow:var(--sh)}
+.cal-title{font-size:.78rem;font-weight:600;color:var(--gray);text-transform:uppercase;letter-spacing:.07em;margin-bottom:.75rem}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px}
+.cal-day{text-align:center;padding:.4rem .1rem;border-radius:6px;cursor:pointer;transition:var(--transition);font-size:.72rem}
+.cal-day .dn{font-weight:600;font-size:.8rem}
+.cal-day .dp{font-size:.68rem;margin-top:.1rem}
+.cal-day.cheap{background:#e8f5ee;color:var(--green)}
+.cal-day.mid{background:#fff8e6;color:#a07000}
+.cal-day.exp{background:#fdeaea;color:var(--red)}
+.cal-day.sel{outline:2px solid var(--navy);outline-offset:1px}
+.cal-day:hover{transform:scale(1.05)}
+
+/* ── RESULT CARD ── */
+.rc{background:var(--white);border-radius:var(--r);padding:1.2rem 1.5rem;margin-bottom:.65rem;box-shadow:0 2px 12px rgba(15,31,61,.07);display:grid;grid-template-columns:1fr auto;gap:1rem;align-items:center;transition:var(--transition);border:1.5px solid transparent;cursor:pointer}
+.rc:hover{box-shadow:var(--sh);border-color:rgba(15,31,61,.15);transform:translateY(-1px)}
+.rc-times{display:flex;align-items:center;gap:1rem}
+.rc-t{font-size:1.45rem;font-weight:600;font-family:'DM Serif Display',serif}
+.rc-dur{text-align:center;color:var(--gray);font-size:.75rem;display:flex;flex-direction:column;align-items:center;gap:2px;min-width:70px}
+.rc-line{width:60px;height:1px;background:var(--gray-l)}
+.rc-info{font-size:.78rem;color:var(--gray);margin-top:.3rem}
+.rc-badges{display:flex;gap:.3rem;margin-top:.4rem;flex-wrap:wrap}
+.badge{padding:.18rem .5rem;border-radius:4px;font-size:.68rem;font-weight:600;background:var(--cream);color:var(--navy)}
+.badge.direct{background:var(--green-l);color:var(--green)}
+.badge.night{background:#1a2d5e1a;color:var(--navy-l)}
+.badge.occ-low{background:var(--green-l);color:var(--green)}
+.badge.occ-med{background:#fff8e6;color:#a07000}
+.badge.occ-high{background:var(--red-l);color:var(--red)}
+.rc-amenities{display:flex;gap:.25rem;margin-top:.4rem;flex-wrap:wrap}
+.am{font-size:.7rem;color:var(--gray);background:var(--gray-ll);padding:.15rem .4rem;border-radius:4px}
+.rc-right{text-align:right}
+.rc-price{font-size:1.5rem;font-weight:700;color:var(--navy);line-height:1}
+.rc-sub{font-size:.73rem;color:var(--gray);margin-bottom:.4rem}
+.book-btn{background:var(--gold);color:var(--navy);border:none;padding:.55rem 1.3rem;border-radius:var(--r-sm);font-size:.88rem;font-weight:700;transition:var(--transition);display:block;width:100%;margin-top:.3rem}
+.book-btn:hover{background:var(--gold-l);transform:translateY(-1px)}
+.rc-breakdown{font-size:.7rem;color:var(--gray);margin-top:.3rem}
+
+/* ═══════════ MODAL ═══════════ */
+.overlay{position:fixed;inset:0;background:rgba(15,31,61,.65);z-index:500;display:flex;align-items:center;justify-content:center;padding:1rem;backdrop-filter:blur(3px)}
+.overlay.hid{display:none}
+.modal{background:var(--white);border-radius:var(--r-lg);max-width:540px;width:100%;max-height:92vh;overflow-y:auto;box-shadow:var(--sh-xl);animation:slideUp .28s ease}
+@keyframes slideUp{from{transform:translateY(16px);opacity:0}to{transform:translateY(0);opacity:1}}
+.mhd{background:var(--navy);color:var(--white);padding:1.5rem;border-radius:var(--r-lg) var(--r-lg) 0 0;display:flex;justify-content:space-between;align-items:flex-start}
+.mtitle{font-family:'DM Serif Display',serif;font-size:1.25rem}
+.msub{color:rgba(245,240,232,.55);font-size:.82rem;margin-top:.2rem}
+.mclose{background:none;border:none;color:var(--cream);font-size:1.6rem;line-height:1;padding:0;opacity:.7;transition:opacity .15s}
+.mclose:hover{opacity:1}
+.mbody{padding:1.5rem}
+.conn-sum{background:var(--cream);border-radius:10px;padding:1rem 1.25rem;margin-bottom:1.25rem}
+.cr{display:flex;justify-content:space-between;align-items:center;padding:.28rem 0;font-size:.88rem}
+.cl{color:var(--gray)}
+.cv{font-weight:500}
+.cr.total{border-top:1px solid var(--cream-dd);margin-top:.4rem;padding-top:.5rem}
+.cv.big{font-size:1.1rem;font-weight:700;color:var(--navy)}
+.breakdown-detail{font-size:.73rem;color:var(--gray);margin-top:.25rem}
+.pay-section h3{font-size:.75rem;text-transform:uppercase;letter-spacing:.08em;color:var(--gray);margin-bottom:.7rem;font-weight:600}
+.pay-grid{display:grid;grid-template-columns:1fr 1fr;gap:.45rem;margin-bottom:1.25rem}
+.pay-opt{border:1.5px solid var(--gray-l);border-radius:var(--r-sm);padding:.65rem .5rem;cursor:pointer;text-align:center;transition:var(--transition);font-size:.8rem;background:var(--white);font-family:inherit}
+.pay-opt:hover{border-color:var(--navy)}
+.pay-opt.sel{border-color:var(--navy);background:var(--cream);font-weight:600}
+.pay-icon{font-size:1.1rem;display:block;margin-bottom:.2rem}
+.seat-section{margin-bottom:1.25rem}
+.seat-section h3{font-size:.75rem;text-transform:uppercase;letter-spacing:.08em;color:var(--gray);margin-bottom:.7rem;font-weight:600}
+.seat-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:4px;font-size:.7rem;text-align:center}
+.seat{padding:.4rem .2rem;border-radius:4px;cursor:pointer;border:1.5px solid var(--gray-l);background:var(--white);transition:var(--transition);font-family:inherit;font-size:.7rem}
+.seat:hover{border-color:var(--navy);background:var(--cream)}
+.seat.sel{background:var(--navy);color:var(--gold);border-color:var(--navy)}
+.seat.taken{background:var(--gray-l);color:var(--gray);cursor:not-allowed}
+.aisle{width:100%;height:10px;grid-column:1/-1}
+.confirm-btn{background:var(--navy);color:var(--gold);border:none;width:100%;padding:.95rem;border-radius:10px;font-size:1rem;font-weight:700;font-family:inherit;transition:var(--transition);letter-spacing:.03em}
+.confirm-btn:hover{background:var(--navy-l)}
+.confirm-btn:disabled{opacity:.6;cursor:wait}
+.secure-note{text-align:center;color:var(--gray);font-size:.74rem;margin-top:.6rem;display:flex;align-items:center;justify-content:center;gap:.3rem}
+
+/* ═══════════ TICKETS ═══════════ */
+.tp{max-width:860px;margin:0 auto;padding:2rem 1rem}
+.pg-title{font-family:'DM Serif Display',serif;font-size:1.75rem;margin-bottom:1.5rem}
+.tc{background:var(--white);border-radius:var(--r);margin-bottom:1rem;overflow:hidden;box-shadow:var(--sh)}
+.tc-hd{background:var(--navy);color:var(--white);padding:1rem 1.5rem;display:flex;justify-content:space-between;align-items:center}
+.tc-route{font-family:'DM Serif Display',serif;font-size:1.05rem}
+.tc-code{font-size:.78rem;color:var(--gold);font-family:monospace;letter-spacing:.05em}
+.tc-body{padding:1rem 1.5rem;display:grid;grid-template-columns:repeat(3,1fr);gap:.75rem}
+.tc-f label{font-size:.68rem;color:var(--gray);text-transform:uppercase;letter-spacing:.05em;display:block;margin-bottom:.15rem}
+.tc-f span{font-weight:500;font-size:.88rem}
+.tc-foot{padding:.7rem 1.5rem;background:var(--cream-d);display:flex;justify-content:space-between;align-items:center;font-size:.82rem;flex-wrap:wrap;gap:.5rem}
+.tc-amenities{display:flex;gap:.25rem;flex-wrap:wrap;padding:.4rem 1.5rem}
+.status-ok{color:var(--green);font-weight:600}
+.status-cx{color:var(--red);font-weight:600}
+.tc-actions{display:flex;gap:.5rem;padding:.7rem 1.5rem;border-top:1px solid var(--gray-l);flex-wrap:wrap}
+.tc-btn{border:1.5px solid var(--gray-l);border-radius:var(--r-sm);padding:.38rem .85rem;font-size:.8rem;background:var(--white);transition:var(--transition);font-family:inherit}
+.tc-btn:hover{border-color:var(--navy);background:var(--cream)}
+.tc-btn.danger{color:var(--red)}
+.tc-btn.danger:hover{border-color:var(--red);background:var(--red-l)}
+
+/* tracking */
+.track-events{padding:.75rem 1.5rem;border-top:1px solid var(--gray-l)}
+.track-title{font-size:.75rem;text-transform:uppercase;letter-spacing:.07em;color:var(--gray);margin-bottom:.5rem;font-weight:600}
+.ev{display:flex;gap:.75rem;align-items:flex-start;padding:.4rem 0;font-size:.82rem}
+.ev-dot{width:8px;height:8px;border-radius:50%;background:var(--green);margin-top:5px;flex-shrink:0}
+.ev-delay{color:var(--red);font-size:.73rem}
+.eu-comp{background:var(--green-l);border:1px solid var(--green);border-radius:var(--r-sm);padding:.65rem .9rem;margin:.5rem 0;font-size:.82rem}
+.eu-comp strong{color:var(--green)}
+
+/* ═══════════ ALERTS ═══════════ */
+.alert-card{background:var(--white);border-radius:var(--r);padding:1rem 1.25rem;margin-bottom:.65rem;display:flex;justify-content:space-between;align-items:center;box-shadow:var(--sh);font-size:.88rem}
+.alert-route{font-weight:500}
+.alert-price{color:var(--green);font-weight:600}
+.del-btn{background:none;border:none;color:var(--red);font-size:1.2rem;padding:.2rem;opacity:.7;transition:opacity .15s}
+.del-btn:hover{opacity:1}
+.add-alert-form{background:var(--white);border-radius:var(--r);padding:1.25rem;margin-top:1rem;box-shadow:var(--sh)}
+.add-alert-form h3{margin-bottom:.9rem;font-family:'DM Serif Display',serif}
+.alert-row{display:grid;grid-template-columns:1fr 1fr 120px auto;gap:.6rem;align-items:end}
+
+/* ═══════════ LEGAL ═══════════ */
+.legal-page{max-width:820px;margin:0 auto;padding:2.5rem 1rem}
+.legal-tabs{display:flex;gap:.4rem;margin-bottom:2rem;flex-wrap:wrap}
+.leg-tab{background:var(--white);border:1.5px solid var(--gray-l);border-radius:var(--r-sm);padding:.4rem 1rem;font-size:.82rem;transition:var(--transition)}
+.leg-tab.act{background:var(--navy);color:var(--gold);border-color:var(--navy)}
+.legal-content{background:var(--white);border-radius:var(--r);padding:2rem;box-shadow:var(--sh);line-height:1.7}
+.legal-content h2{font-family:'DM Serif Display',serif;font-size:1.3rem;margin:1.5rem 0 .7rem;border-bottom:1px solid var(--gray-l);padding-bottom:.4rem}
+.legal-content h2:first-child{margin-top:0}
+.legal-content p,.legal-content li{font-size:.9rem;color:#334;margin-bottom:.5rem}
+.legal-content ul{padding-left:1.5rem;margin-bottom:.75rem}
+.legal-content .highlight{background:var(--cream);border-left:3px solid var(--gold);padding:.75rem 1rem;border-radius:0 var(--r-sm) var(--r-sm) 0;margin:.75rem 0}
+.rights-table{width:100%;border-collapse:collapse;margin:.75rem 0;font-size:.82rem}
+.rights-table th{background:var(--cream);padding:.6rem .85rem;text-align:left;font-size:.73rem;text-transform:uppercase;letter-spacing:.06em;color:var(--gray)}
+.rights-table td{padding:.6rem .85rem;border-top:1px solid var(--gray-l)}
+.rights-table tr:hover td{background:var(--cream)}
+.rights-table a{color:var(--blue);text-decoration:underline;text-underline-offset:2px}
+
+/* ═══════════ AUTH ═══════════ */
+.auth-pg{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:2rem;background:var(--cream)}
+.auth-box{background:var(--white);border-radius:var(--r-lg);padding:2.5rem;max-width:420px;width:100%;box-shadow:var(--sh-xl)}
+.auth-logo{font-family:'DM Serif Display',serif;font-size:1.55rem;color:var(--navy);margin-bottom:.2rem}
+.auth-logo em{color:var(--gold)}
+.auth-tagline{color:var(--gray);font-size:.88rem;margin-bottom:2rem}
+.auth-f{margin-bottom:.9rem}
+.auth-f label{display:block;font-size:.75rem;font-weight:600;color:var(--gray);text-transform:uppercase;letter-spacing:.05em;margin-bottom:.35rem}
+.auth-f input{width:100%;border:1.5px solid var(--gray-l);border-radius:var(--r-sm);padding:.72rem;font-size:.93rem;font-family:inherit;color:var(--navy);transition:var(--transition)}
+.auth-f input:focus{outline:none;border-color:var(--navy);box-shadow:0 0 0 3px rgba(15,31,61,.06)}
+.auth-sub-btn{background:var(--navy);color:var(--gold);border:none;width:100%;padding:.9rem;border-radius:10px;font-size:1rem;font-weight:700;margin-top:.25rem;transition:var(--transition)}
+.auth-sub-btn:hover{background:var(--navy-l)}
+.auth-sw{text-align:center;margin-top:1.1rem;font-size:.85rem;color:var(--gray)}
+.auth-sw a{color:var(--navy);font-weight:600;cursor:pointer}
+
+/* ═══════════ ADMIN ═══════════ */
+.adm{max-width:1140px;margin:0 auto;padding:2rem 1rem}
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:.9rem;margin-bottom:2rem}
+.stat{background:var(--white);border-radius:var(--r);padding:1.2rem 1.5rem;box-shadow:var(--sh);border-left:4px solid var(--gold)}
+.stat-l{font-size:.72rem;text-transform:uppercase;letter-spacing:.08em;color:var(--gray);margin-bottom:.35rem}
+.stat-v{font-family:'DM Serif Display',serif;font-size:1.9rem;color:var(--navy);line-height:1}
+.stat-u{font-size:.85rem;color:var(--gray)}
+.adm-section{background:var(--white);border-radius:var(--r);box-shadow:var(--sh);overflow:hidden;margin-bottom:1.5rem}
+.adm-sh{padding:.9rem 1.5rem;border-bottom:1px solid var(--gray-l);font-family:'DM Serif Display',serif;font-size:1.1rem;display:flex;justify-content:space-between;align-items:center}
+table{width:100%;border-collapse:collapse}
+th{background:var(--cream);padding:.65rem .9rem;text-align:left;font-size:.7rem;text-transform:uppercase;letter-spacing:.07em;color:var(--gray);white-space:nowrap}
+td{padding:.65rem .9rem;border-top:1px solid var(--gray-l);font-size:.83rem}
+tr:hover td{background:var(--cream)}
+.adm-charts{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-bottom:1.5rem}
+.chart-box{background:var(--white);border-radius:var(--r);padding:1.25rem;box-shadow:var(--sh)}
+.chart-box h3{font-size:.78rem;text-transform:uppercase;letter-spacing:.07em;color:var(--gray);margin-bottom:.9rem;font-weight:600}
+.bar-item{display:flex;align-items:center;gap:.5rem;margin-bottom:.5rem;font-size:.8rem}
+.bar-label{width:120px;flex-shrink:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.bar-track{flex:1;background:var(--gray-l);border-radius:4px;height:8px;overflow:hidden}
+.bar-fill{height:100%;background:var(--gold);border-radius:4px;transition:width .5s ease}
+.bar-val{width:40px;text-align:right;color:var(--gray)}
+
+/* ═══════════ ABOUT ═══════════ */
+.about-pg{max-width:820px;margin:0 auto;padding:2.5rem 1rem}
+.about-hero{text-align:center;margin-bottom:3rem}
+.about-hero h1{font-family:'DM Serif Display',serif;font-size:2.2rem;margin-bottom:.75rem}
+.about-hero p{color:var(--gray);font-size:1rem;max-width:540px;margin:0 auto}
+.about-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-bottom:2rem}
+.about-card{background:var(--white);border-radius:var(--r);padding:1.5rem;box-shadow:var(--sh)}
+.about-card h3{font-family:'DM Serif Display',serif;margin-bottom:.6rem}
+.about-card p{color:var(--gray);font-size:.88rem;line-height:1.6}
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;background:var(--navy);border-radius:var(--r);padding:1.5rem;margin-bottom:2rem}
+.stat-item{text-align:center}
+.stat-item .n{font-family:'DM Serif Display',serif;font-size:1.75rem;color:var(--gold)}
+.stat-item .d{font-size:.78rem;color:rgba(245,240,232,.6);margin-top:.2rem}
+.ops-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:.75rem;margin-top:1rem}
+.op-card{background:var(--white);border-radius:var(--r-sm);padding:.75rem 1rem;display:flex;align-items:center;gap:.6rem;box-shadow:0 2px 8px rgba(15,31,61,.07);font-size:.85rem}
+.op-flag{font-size:1.1rem}
+
+/* ═══════════ TOAST ═══════════ */
+.toasts{position:fixed;bottom:1.5rem;right:1.5rem;z-index:1000;display:flex;flex-direction:column;gap:.45rem}
+.toast{background:var(--navy);color:var(--white);padding:.85rem 1.2rem;border-radius:10px;font-size:.85rem;box-shadow:var(--sh-lg);animation:tIn .3s ease;max-width:320px;border-left:4px solid var(--gold)}
+.toast.err{border-left-color:var(--red)}
+.toast.ok{border-left-color:var(--green)}
+@keyframes tIn{from{opacity:0;transform:translateX(16px)}to{opacity:1;transform:translateX(0)}}
+
+/* ═══════════ UTILITIES ═══════════ */
+.empty{text-align:center;padding:4rem 2rem;color:var(--gray)}
+.empty .ico{font-size:2.5rem;margin-bottom:.75rem}
+.empty h3{font-family:'DM Serif Display',serif;color:var(--navy);margin-bottom:.4rem;font-size:1.2rem}
+.empty p{font-size:.88rem}
+.spinner{display:inline-block;width:20px;height:20px;border:2px solid rgba(200,169,110,.3);border-top-color:var(--gold);border-radius:50%;animation:spin .6s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading{text-align:center;padding:3rem;color:var(--gray)}
+.divider{height:1px;background:var(--gray-l);margin:1rem 0}
+.section-title{font-family:'DM Serif Display',serif;font-size:1.3rem;margin-bottom:1rem}
+.pill{display:inline-block;padding:.2rem .65rem;border-radius:20px;font-size:.73rem;font-weight:600}
+.pill-green{background:var(--green-l);color:var(--green)}
+.pill-red{background:var(--red-l);color:var(--red)}
+.pill-gold{background:rgba(200,169,110,.15);color:#8a6000}
+
+/* ═══════════ RESPONSIVE ═══════════ */
+@media(max-width:768px){
+  .search-row.r2,.search-row.r4{grid-template-columns:1fr}
+  .rc{grid-template-columns:1fr}
+  .rc-right{display:flex;justify-content:space-between;align-items:center;border-top:1px solid var(--gray-l);padding-top:.75rem;margin-top:.5rem}
+  .tc-body{grid-template-columns:1fr 1fr}
+  .adm-charts{grid-template-columns:1fr}
+  .about-grid{grid-template-columns:1fr}
+  .stats-row{grid-template-columns:1fr 1fr}
+  .alert-row{grid-template-columns:1fr 1fr}
+  .pay-grid{grid-template-columns:1fr 1fr}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="logo" onclick="go('home')">🚆 TrainConnect <span class="logo-sub">Europe</span></div>
+  <div class="nav-links">
+    <button class="nav-lnk" onclick="go('home')">Suche</button>
+    <button class="nav-lnk" id="nlTickets" onclick="goAuth('tickets')" style="display:none">Tickets</button>
+    <button class="nav-lnk" id="nlAlerts"  onclick="goAuth('alerts')"  style="display:none">Preisalarm</button>
+    <button class="nav-lnk" onclick="go('about')">Über uns</button>
+    <button class="nav-lnk" onclick="go('legal')">Rechtliches</button>
+    <button class="nav-lnk" id="nlAdmin"   onclick="go('admin')"       style="display:none">Admin</button>
+  </div>
+  <div id="navRight"></div>
+</nav>
+
+<!-- TOASTS -->
+<div class="toasts" id="toasts"></div>
+
+<!-- CHECKOUT MODAL -->
+<div class="overlay hid" id="checkoutOverlay">
+  <div class="modal">
+    <div class="mhd">
+      <div>
+        <div class="mtitle">Ticket buchen</div>
+        <div class="msub" id="mRoute"></div>
+      </div>
+      <button class="mclose" onclick="closeModal()">×</button>
+    </div>
+    <div class="mbody">
+      <div class="conn-sum" id="mSummary"></div>
+
+      <!-- Seat selection -->
+      <div class="seat-section">
+        <h3>Sitzplatz wählen</h3>
+        <div class="seat-grid" id="seatGrid"></div>
+      </div>
+
+      <div class="pay-section">
+        <h3>Zahlungsmethode</h3>
+        <div class="pay-grid" id="payGrid"></div>
+      </div>
+
+      <button class="confirm-btn" id="confirmBtn" onclick="confirmBook()">
+        Jetzt kostenpflichtig buchen
+      </button>
+      <div class="secure-note">🔒 Sichere, verschlüsselte Verbindung</div>
+    </div>
+  </div>
+</div>
+
+<!-- CANCEL MODAL -->
+<div class="overlay hid" id="cancelOverlay">
+  <div class="modal" style="max-width:420px">
+    <div class="mhd" style="background:var(--red)">
+      <div><div class="mtitle">Ticket stornieren</div><div class="msub" id="cRoute"></div></div>
+      <button class="mclose" onclick="closeCancelModal()">×</button>
+    </div>
+    <div class="mbody">
+      <p style="color:var(--gray);font-size:.9rem;margin-bottom:1.25rem" id="cInfo"></p>
+      <button class="confirm-btn" style="background:var(--red);color:white" onclick="doCancel()">Stornierung bestätigen</button>
+      <button class="tc-btn" style="width:100%;margin-top:.5rem;text-align:center" onclick="closeCancelModal()">Abbrechen</button>
+    </div>
+  </div>
+</div>
+
+<!-- ████████ PAGE: HOME ████████ -->
+<div class="page active" id="page-home">
+  <div class="eu-banner">
+    <span class="icon">🇪🇺</span>
+    <span>EU-Initiative: Am 13. Mai 2026 beschloss die EU-Kommission verbindliche Regeln für grenzüberschreitende Zugtickets —
+    <strong>TrainConnect ist bereits heute die Plattform dafür.</strong>
+    <a href="#" onclick="go('legal')">Mehr erfahren →</a></span>
+  </div>
+
+  <div class="hero">
+    <div class="eu-badge">✨ Direkt integriert: DB · SBB · SNCF · ÖBB · NS · Eurostar und mehr</div>
+    <h1>Ein Ticket.<br><em>Ganz Europa.</em></h1>
+    <p class="hero-sub">Von Dublin bis Rom, von Bern bis Berlin — alle europäischen Bahnen auf einer Plattform. Preisvergleich in Echtzeit.</p>
+
+    <div class="search-box">
+      <div class="search-row r2" style="position:relative">
+        <div class="field">
+          <label>Von</label>
+          <input type="text" id="fromInput" placeholder="Berlin Hbf, Zürich HB …" autocomplete="off" oninput="ac(this,'fromList','fromId')">
+          <input type="hidden" id="fromId">
+          <div class="ac-list" id="fromList" style="display:none"></div>
+        </div>
+        <button class="swap-btn" onclick="swap()" title="Tauschen">⇄</button>
+        <div class="field">
+          <label>Nach</label>
+          <input type="text" id="toInput" placeholder="Wien Hbf, Amsterdam …" autocomplete="off" oninput="ac(this,'toList','toId')">
+          <input type="hidden" id="toId">
+          <div class="ac-list" id="toList" style="display:none"></div>
+        </div>
+      </div>
+      <div class="search-row r4">
+        <div class="field">
+          <label>Datum</label>
+          <input type="date" id="dateInput">
+        </div>
+        <div class="field">
+          <label>Rückfahrt (optional)</label>
+          <input type="date" id="returnInput">
+        </div>
+        <div class="field">
+          <label>Klasse</label>
+          <select id="classSelect">
+            <option value="2">2. Klasse</option>
+            <option value="1">1. Klasse</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Pers.</label>
+          <select id="passSelect">
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+          </select>
+        </div>
+      </div>
+      <button class="search-submit" onclick="doSearch()">🔍 Verbindungen suchen</button>
+    </div>
+  </div>
+
+  <div class="popular">
+    <h3>Beliebte Strecken</h3>
+    <div class="chips" id="chips"></div>
+  </div>
+
+  <div class="ops-band">
+    <div class="ops-scroll" id="opsBand"></div>
+  </div>
+
+  <div class="features">
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon">⚡</div>
+        <div class="feature-title">Echtzeit-Preisvergleich</div>
+        <div class="feature-desc">Trainline, Rail Europe, Omio, SBB-App und Direktbucher — du siehst immer den günstigsten Preis.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🔔</div>
+        <div class="feature-title">Anschlüsse & Verspätungen</div>
+        <div class="feature-desc">Siehst du sofort, wenn dein Anschlusszug in Frankreich Verspätung hat — auch grenzübergreifend.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">⚖️</div>
+        <div class="feature-title">EU-Fahrgastrechte automatisch</div>
+        <div class="feature-desc">Bei Verspätung über 60 Min. wird dir das Entschädigungsformular direkt angezeigt — 25% oder 50% Rückerstattung.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🌍</div>
+        <div class="feature-title">Grenzüberschreitend</div>
+        <div class="feature-desc">Eine Suche Dublin → Paris zeigt automatisch alle Anschlusszüge inklusive Verspätungsstatus.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🌙</div>
+        <div class="feature-title">Nachtzüge & Schlafwagen</div>
+        <div class="feature-desc">Couchette, Liegewagen und Schlafwagen — Europa im Schlaf durchqueren. Vollständig buchbar.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">♿</div>
+        <div class="feature-title">Barrierefreiheit</div>
+        <div class="feature-desc">Rollstuhlgerechte Verbindungen werden klar gekennzeichnet. Alle Fahrgastrechtsinformationen barrierefrei.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ████████ PAGE: RESULTS ████████ -->
+<div class="page" id="page-results">
+  <div class="rp">
+    <div class="rp-header">
+      <div>
+        <h2 class="rp-title" id="rTitle">Verbindungen</h2>
+        <div class="rp-meta" id="rMeta"></div>
+      </div>
+      <div style="display:flex;gap:.5rem;flex-wrap:wrap">
+        <button class="nav-btn" onclick="go('home')">← Neue Suche</button>
+        <button class="nav-btn" id="alertBtn" onclick="showAlertForm()" style="display:none">🔔 Preisalarm</button>
+      </div>
+    </div>
+
+    <!-- Price calendar -->
+    <div class="cal-wrap" id="calWrap" style="display:none">
+      <div class="cal-title">Preiskalender — günstigste Tage <span style="font-size:.7rem;color:var(--gray)">(🟢 günstig · 🟡 mittel · 🔴 teuer)</span></div>
+      <div class="cal-grid" id="calGrid"></div>
+    </div>
+
+    <div class="filter-bar">
+      <button class="filter-btn act" onclick="filt('all',this)">Alle</button>
+      <button class="filter-btn" onclick="filt('direct',this)">Direktverbindung</button>
+      <button class="filter-btn" onclick="filt('cheap',this)">Günstigste</button>
+      <button class="filter-btn" onclick="filt('fast',this)">Schnellste</button>
+      <button class="filter-btn" onclick="filt('night',this)">Nachtzüge</button>
+    </div>
+
+    <div id="rList"></div>
+  </div>
+</div>
+
+<!-- ████████ PAGE: TICKETS ████████ -->
+<div class="page" id="page-tickets">
+  <div class="tp">
+    <h1 class="pg-title">Meine Tickets</h1>
+    <div id="ticketList"></div>
+  </div>
+</div>
+
+<!-- ████████ PAGE: ALERTS ████████ -->
+<div class="page" id="page-alerts">
+  <div class="tp">
+    <h1 class="pg-title">🔔 Preisalarme</h1>
+    <p style="color:var(--gray);margin-bottom:1.5rem;font-size:.9rem">Benachrichtige mich, sobald der Preis unter deinen Zielpreis fällt.</p>
+    <div id="alertList"></div>
+    <div class="add-alert-form">
+      <h3>Neuer Preisalarm</h3>
+      <div class="alert-row">
+        <div class="field">
+          <label>Von</label>
+          <input type="text" id="aFromInput" placeholder="Zürich HB" autocomplete="off" oninput="ac(this,'aFromList','aFromId')">
+          <input type="hidden" id="aFromId">
+          <div class="ac-list" id="aFromList" style="display:none"></div>
+        </div>
+        <div class="field">
+          <label>Nach</label>
+          <input type="text" id="aToInput" placeholder="Berlin Hbf" autocomplete="off" oninput="ac(this,'aToList','aToId')">
+          <input type="hidden" id="aToId">
+          <div class="ac-list" id="aToList" style="display:none"></div>
+        </div>
+        <div class="field">
+          <label>Zielpreis €</label>
+          <input type="number" id="aPrice" placeholder="49" min="1">
+        </div>
+        <div class="field" style="justify-content:flex-end">
+          <button class="nav-btn primary" onclick="addAlert()">Alarm setzen</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ████████ PAGE: ABOUT ████████ -->
+<div class="page" id="page-about">
+  <div class="about-pg">
+    <div class="about-hero">
+      <h1>Die einheitliche Plattform<br>für Zugreisen in Europa</h1>
+      <p>TrainConnect verbindet alle europäischen Bahnnetze auf einer Plattform. Keine Weiterleitungen, keine externen Seiten — alles direkt integriert.</p>
+    </div>
+
+    <div class="stats-row">
+      <div class="stat-item"><div class="n">300+</div><div class="d">Bahnhöfe</div></div>
+      <div class="stat-item"><div class="n">16</div><div class="d">Bahngesellschaften</div></div>
+      <div class="stat-item"><div class="n">11</div><div class="d">Sprachen</div></div>
+      <div class="stat-item"><div class="n">32</div><div class="d">Länder</div></div>
+    </div>
+
+    <div class="about-grid">
+      <div class="about-card">
+        <h3>Was ist TrainConnect?</h3>
+        <p>TrainConnect ist eine direkte Buchungsplattform für europäische Zugverbindungen. Du wirst niemals zu einer externen Buchungsseite weitergeleitet — alle Verbindungen, Preise und Tickets werden direkt auf dieser Plattform verarbeitet.</p>
+      </div>
+      <div class="about-card">
+        <h3>EU-Initiative</h3>
+        <p>Am 13. Mai 2026 schlug die EU-Kommission neue Vorschriften vor, die einen einzigen Fahrschein für Mehretappen-Reisen durch ganz Europa ermöglichen sollen. TrainConnect ist bereits heute die technische Umsetzung dieser Vision.</p>
+      </div>
+      <div class="about-card">
+        <h3>Preisvergleich</h3>
+        <p>Wir vergleichen Trainline, Omio, Rail Europe, Interrail und Direktbuchung und zeigen dir immer den günstigsten verfügbaren Preis — ohne versteckte Gebühren.</p>
+      </div>
+      <div class="about-card">
+        <h3>Kontakt & Partner</h3>
+        <p>Fragen, Partnerschaftsanfragen oder API-Integrationen? <br>✉️ datenschutz@trainconnect.eu<br><br>Für Datenschutzanfragen oder DSGVO-Auskunftsersuchen bitte direkt per E-Mail kontaktieren.</p>
+      </div>
+    </div>
+
+    <div class="section-title">Direkt integrierte Bahngesellschaften</div>
+    <div class="ops-grid" id="opsGrid"></div>
+  </div>
+</div>
+
+<!-- ████████ PAGE: LEGAL ████████ -->
+<div class="page" id="page-legal">
+  <div class="legal-page">
+    <div class="legal-tabs">
+      <button class="leg-tab act" onclick="legalTab('fahrgastrechte',this)">⚖️ Fahrgastrechte</button>
+      <button class="leg-tab" onclick="legalTab('datenschutz',this)">🔐 Datenschutz</button>
+      <button class="leg-tab" onclick="legalTab('agb',this)">📄 AGB</button>
+      <button class="leg-tab" onclick="legalTab('impressum',this)">🏢 Impressum</button>
+    </div>
+    <div class="legal-content" id="legalContent"></div>
+  </div>
+</div>
+
+<!-- ████████ PAGE: LOGIN ████████ -->
+<div class="page" id="page-login">
+  <div class="auth-pg">
+    <div class="auth-box">
+      <div class="auth-logo">Train<em>Connect</em></div>
+      <div class="auth-tagline">Willkommen zurück — bitte anmelden</div>
+      <div class="auth-f"><label>E-Mail</label><input type="email" id="lEmail" placeholder="anna@beispiel.de"></div>
+      <div class="auth-f"><label>Passwort</label><input type="password" id="lPw" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()"></div>
+      <button class="auth-sub-btn" onclick="doLogin()">Anmelden</button>
+      <div class="auth-sw">Noch kein Konto? <a onclick="go('register')">Registrieren</a></div>
+    </div>
+  </div>
+</div>
+
+<!-- ████████ PAGE: REGISTER ████████ -->
+<div class="page" id="page-register">
+  <div class="auth-pg">
+    <div class="auth-box">
+      <div class="auth-logo">Train<em>Connect</em></div>
+      <div class="auth-tagline">Konto erstellen — kostenlos & sicher</div>
+      <div class="auth-f"><label>Vollständiger Name</label><input type="text" id="rName" placeholder="Anna Müller"></div>
+      <div class="auth-f"><label>E-Mail</label><input type="email" id="rEmail" placeholder="anna@beispiel.de"></div>
+      <div class="auth-f"><label>Passwort (min. 6 Zeichen)</label><input type="password" id="rPw" placeholder="••••••••" onkeydown="if(event.key==='Enter')doRegister()"></div>
+      <button class="auth-sub-btn" onclick="doRegister()">Konto erstellen</button>
+      <div class="auth-sw">Schon ein Konto? <a onclick="go('login')">Anmelden</a></div>
+    </div>
+  </div>
+</div>
+
+<!-- ████████ PAGE: ADMIN ████████ -->
+<div class="page" id="page-admin">
+  <div class="adm">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem">
+      <h1 class="pg-title" style="margin:0">Admin Dashboard</h1>
+      <button class="nav-btn" onclick="loadAdmin()">↻ Aktualisieren</button>
+    </div>
+    <div class="stats-grid" id="aStats"></div>
+    <div class="adm-charts">
+      <div class="chart-box"><h3>Buchungen nach Betreiber</h3><div id="opChart"></div></div>
+      <div class="chart-box"><h3>Buchungen nach Zahlungsmethode</h3><div id="payChart"></div></div>
+    </div>
+    <div class="adm-section">
+      <div class="adm-sh">Letzte Buchungen</div>
+      <div id="aTable"></div>
+    </div>
+    <div class="adm-section">
+      <div class="adm-sh">Nutzer <span id="userCount" style="font-size:.8rem;color:var(--gray)"></span></div>
+      <div id="aUsers"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════════════════════════
+//  STATE
+// ═══════════════════════════════════════════════════════════════════════════
+const S = {
+  token: localStorage.getItem('tc_token'),
+  user:  JSON.parse(localStorage.getItem('tc_user')||'null'),
+  results: [], selectedConn: null, selectedPay: 'card', selectedSeat: null,
+  cancelTicketId: null, payMethods: [], legalTab: 'fahrgastrechte'
+};
+
+// ═══════════════════════════════════════════════════════════════════════════
+//  API
+// ═══════════════════════════════════════════════════════════════════════════
+async function api(method, path, body) {
+  const opts = { method, headers:{'Content-Type':'application/json'} };
+  if (S.token) opts.headers['Authorization'] = 'Bearer ' + S.token;
+  if (body) opts.body = JSON.stringify(body);
+  const r = await fetch('/api' + path, opts);
+  const d = await r.json();
+  if (!r.ok) throw new Error(d.error || 'Fehler');
+  return d;
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+//  TOAST
+// ═══════════════════════════════════════════════════════════════════════════
+function toast(msg, type='info', dur=4000) {
+  const el = Object.assign(document.createElement('div'), { className:`toast ${type==='error'?'err':type==='success'?'ok':''}`, textContent:msg });
+  document.getElementById('toasts').appendChild(el);
+  setTimeout(()=>el.remove(), dur);
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+//  NAVIGATION
+// ═══════════════════════════════════════════════════════════════════════════
+function go(page) {
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  const el = document.getElementById('page-'+page);
+  if (el) { el.classList.add('active'); window.scrollTo(0,0); }
+  if (page==='tickets') loadTickets();
+  if (page==='alerts')  loadAlerts();
+  if (page==='admin')   loadAdmin();
+  if (page==='about')   loadAbout();
+  if (page==='legal')   renderLegal(S.legalTab);
+}
+function goAuth(page) {
+  if (!S.token) { go('login'); return; }
+  go(page);
+}
+
+function updateNav() {
+  const nr = document.getElementById('navRight');
+  const nl = document.getElementById('nlTickets');
+  const na = document.getElementById('nlAlerts');
+  const nadm = document.getElementById('nlAdmin');
+  if (S.user) {
+    nl.style.display = na.style.display = '';
+    if (S.user.role==='admin') nadm.style.display='';
+    nr.innerHTML = `<div class="user-badge">
+      <span style="color:rgba(245,240,232,.7);font-size:.82rem">👋 ${S.user.name}</span>
+      <span class="pts">⭐ ${S.user.loyaltyPoints||0} Pts</span>
+      <button class="nav-btn" onclick="doLogout()">Abmelden</button>
+    </div>`;
+  } else {
+    nl.style.display = na.style.display = nadm.style.display = 'none';
+    nr.innerHTML = `<div style="display:flex;gap:.5rem">
+      <button class="nav-btn" onclick="go('login')">Anmelden</button>
+      <button class="nav-btn primary" onclick="go('register')">Registrieren</button>
+    </div>`;
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+//  AUTH
+// ═══════════════════════════════════════════════════════════════════════════
+async function doLogin() {
+  const email=document.getElementById('lEmail').value.trim();
+  const pw=document.getElementById('lPw').value;
+  if (!email||!pw) return toast('Bitte alle Felder ausfüllen','error');
+  try {
+    const d = await api('POST','/auth/login',{email,password:pw});
+    setUser(d); toast('Willkommen zurück, '+d.user.name+'!','success'); go('home');
+  } catch(e) { toast(e.message,'error'); }
+}
+async function doRegister() {
+  const name=document.getElementById('rName').value.trim();
+  const email=document.getElementById('rEmail').value.trim();
+  const pw=document.getElementById('rPw').value;
+  if (!name||!email||!pw) return toast('Bitte alle Felder ausfüllen','error');
+  try {
+    const d = await api('POST','/auth/register',{name,email,password:pw});
+    setUser(d); toast('Willkommen bei TrainConnect, '+d.user.name+'!','success'); go('home');
+  } catch(e) { toast(e.message,'error'); }
+}
+function doLogout() {
+  S.token=null; S.user=null;
+  localStorage.removeItem('tc_token'); localStorage.removeItem('tc_user');
+  updateNav(); go('home'); toast('Abgemeldet');
+}
+function setUser(d) {
+  S.token=d.token; S.user=d.user;
+  localStorage.setItem('tc_token',d.token);
+  localStorage.setItem('tc_user',JSON.stringify(d.user));
+  updateNav();
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+//  AUTOCOMPLETE
+// ═══════════════════════════════════════════════════════════════════════════
+const FLAGS = {DE:'🇩🇪',CH:'🇨🇭',AT:'🇦🇹',FR:'🇫🇷',NL:'🇳🇱',BE:'🇧🇪',IT:'🇮🇹',ES:'🇪🇸',GB:'🇬🇧',IE:'🇮🇪',CZ:'🇨🇿',PL:'🇵🇱',HU:'🇭🇺',DK:'🇩🇰',SE:'🇸🇪',NO:'🇳🇴'};
+let acT = null;
+function ac(inp, listId, hidId) {
+  const q = inp.value;
+  const list = document.getElementById(listId);
+  clearTimeout(acT);
+  if (q.length<1) { list.style.display='none'; return; }
+  acT = setTimeout(async ()=>{
+    try {
+      const rs = await api('GET','/stations/search?q='+encodeURIComponent(q));
+      if (!rs.length) { list.style.display='none'; return; }
+      list.innerHTML = rs.map(s=>`
+        <div class="ac-item" onclick="pickStation('${s.id}','${s.name}','${listId}','${hidId}')">
+          <span>${FLAGS[s.country]||'🚉'}</span>
+          <span><strong>${s.name}</strong></span>
+          <span class="city">${s.city} · ${s.country}</span>
+        </div>`).join('');
+      list.style.display='block';
+    } catch{}
+  }, 180);
+}
+function pickStation(id, name, listId, hidId) {
+  const inpId = hidId==='fromId'?'fromInput': hidId==='toId'?'toInput': hidId==='aFromId'?'aFromInput':'aToInput';
+  document.getElementById(inpId).value = name;
+  document.getElementById(hidId).value = id;
+  document.getElementById(listId).style.display='none';
+}
+function swap() {
+  const fi=document.getElementById('fromInput'), ti=document.getElementById('toInput');
+  const fid=document.getElementById('fromId'), tid=document.getElementById('toId');
+  [fi.value,ti.value]=[ti.value,fi.value];
+  [fid.value,tid.value]=[tid.value,fid.value];
+}
+document.addEventListener('click', e=>{
+  if (!e.target.closest('.field')) document.querySelectorAll('.ac-list').forEach(l=>l.style.display='none');
+});
+
+// ═══════════════════════════════════════════════════════════════════════════
+//  SEARCH
+// ═══════════════════════════════════════════════════════════════════════════
+async function doSearch() {
+  if (!S.token) { toast('Bitte zuerst anmelden','error'); go('login'); return; }
+  const from=document.getElementById('fromId').value;
+  const to=document.getElementById('toId').value;
+  const date=document.getElementById('dateInput').value;
+  const sc=document.getElementById('classSelect').value;
+  const pax=document.getElementById('passSelect').value;
+  if (!from) return toast('Bitte Abfahrtsbahnhof wählen','error');
+  if (!to)   return toast('Bitte Zielbahnhof wählen','error');
+  if (!date) return toast('Bitte Datum wählen','error');
+
+  document.getElementById('rList').innerHTML='<div class="loading"><div class="spinner"></div><p style="margin-top:1rem">Verbindungen werden gesucht…</p></div>';
+  document.getElementById('calWrap').style.display='none';
+  go('results');
+
+  try {
+    const d = await api('GET',`/search?from=${from}&to=${to}&date=${date}&passengers=${pax}&class=${sc}`);
+    S.results = d.results;
+    document.getElementById('rTitle').textContent = `${document.getElementById('fromInput').value} → ${document.getElementById('toInput').value}`;
+    document.getElementById('rMeta').textContent  = `${d.count} Verbindungen · ${fmtDate(date)} · ${pax} Person(en) · ${sc}. Klasse`;
+    if (S.user) document.getElementById('alertBtn').style.display='';
+    renderResults(d.results);
+    loadPriceCalendar(from, to, date, pax, sc);
+  } catch(e) {
+    toast(e.message,'error');
+    document.getElementById('rList').innerHTML=`<div class="empty"><div class="ico">😕</div><h3>${e.message}</h3></div>`;
+  }
+}
+
+function renderResults(results) {
+  if (!results.length) {
+    document.getElementById('rList').innerHTML='<div class="empty"><div class="ico">🔍</div><h3>Keine Verbindungen gefunden</h3><p>Bitte anderen Termin oder Bahnhof versuchen.</p></div>';
+    return;
+  }
+  document.getElementById('rList').innerHTML = results.map((r,i)=>`
+    <div class="rc" onclick="openCheckout(${i})">
+      <div>
+        <div class="rc-times">
+          <div><div class="rc-t">${fmtTime(r.departureTime)}</div><div style="font-size:.73rem;color:var(--gray)">${r.fromStation}</div></div>
+          <div class="rc-dur">
+            <div>${r.duration}</div>
+            <div class="rc-line"></div>
+            <div>${r.changes===0?'Direkt':r.changes+' Umstieg'}</div>
+          </div>
+          <div><div class="rc-t">${fmtTime(r.arrivalTime)}</div><div style="font-size:.73rem;color:var(--gray)">${r.toStation}</div></div>
+        </div>
+        <div class="rc-info">${r.trainNumber} · ${r.operator} · ${r.distance} km</div>
+        <div class="rc-badges">
+          ${r.changes===0?'<span class="badge direct">✓ Direktverbindung</span>':''}
+          ${r.isNightTrain?'<span class="badge night">🌙 Nachtzug</span>':''}
+          <span class="badge occ-${r.occupancy}">${r.occupancy==='low'?'🟢 Viele Plätze':r.occupancy==='medium'?'🟡 Mäßig ausgelastet':'🔴 Fast ausgebucht'}</span>
+          <span class="badge">${r.seatClass}. Klasse</span>
+        </div>
+        <div class="rc-amenities">${renderAmenities(r.amenities)}</div>
+      </div>
+      <div class="rc-right">
+        <div class="rc-sub">Gesamt für ${r.passengers} Pers.</div>
+        <div class="rc-price">€${r.price}</div>
+        <div class="rc-breakdown">Basis €${r.priceBreakdown.baseFare} + Steuern €${r.priceBreakdown.taxes}</div>
+        <button class="book-btn">Buchen →</button>
+      </div>
+    </div>`).join('');
+}
+
+function renderAmenities(am) {
+  if (!am) return '';
+  const icons = { wifi:'📶 WLAN', dining:'🍽 Speisewagen', sleepingCar:'🛏 Schlafwagen',
+    couchette:'🛋 Liegewagen', powerOutlets:'🔌 Steckdosen', bikeStorage:'🚲 Fahrrad',
+    wheelchair:'♿ Rollstuhl', quiet:'🔇 Ruhezone', airConditioning:'❄️ Klima' };
+  return Object.entries(am).filter(([,v])=>v).map(([k])=>`<span class="am">${icons[k]||k}</span>`).join('');
+}
+
+function filt(type, btn) {
+  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('act'));
+  btn.classList.add('act');
+  let res = [...S.results];
+  if (type==='direct') res = res.filter(r=>r.changes===0);
+  else if (type==='cheap') res = [...res].sort((a,b)=>a.price-b.price);
+  else if (type==='fast')  res = [...res].sort((a,b)=>new Date(a.arrivalTime)-new Date(b.arrivalTime));
+  else if (type==='night') res = res.filter(r=>r.isNightTrain);
+  renderResults(res);
+}
+
+// ── PRICE CALENDAR ──────────────────────────────────────────────────────────
+async function loadPriceCalendar(from, to, date, pax, sc) {
+  try {
+    const d   = new Date(date);
+    const cal = await api('GET',`/price-calendar?from=${from}&to=${to}&month=${d.getMonth()+1}&year=${d.getFullYear()}&passengers=${pax}&class=${sc}`);
+    const prices = cal.map(c=>c.price);
+    const min = Math.min(...prices), max = Math.max(...prices);
+    const mid = (min+max)/2;
+    const today = parseInt(date.split('-')[2]);
+
+    document.getElementById('calGrid').innerHTML = cal.map(c=>{
+      const cls = c.price < mid*0.9 ? 'cheap' : c.price > mid*1.1 ? 'exp' : 'mid';
+      const sel = c.day===today ? 'sel' : '';
+      return `<div class="cal-day ${cls} ${sel}" onclick="selectCalDay(${c.day},'${date}')">
+        <div class="dn">${c.day}</div>
+        <div class="dp">€${c.price}</div>
+      </div>`;
+    }).join('');
+    document.getElementById('calWrap').style.display='';
+  } catch(e){ toast('Preiskalender konnte nicht geladen werden','error'); }
+}
+function selectCalDay(day, dateStr) {
+  const d = new Date(dateStr);
+  d.setDate(day);
+  document.getElementById('dateInput').value = d.toISOString().split('T')[0];
+  doSearch();
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+//  CHECKOUT
+// ═══════════════════════════════════════════════════════════════════════════
+function openCheckout(i) {
+  if (!S.token) { toast('Bitte zuerst anmelden','error'); go('login'); return; }
+  const c = S.results[i]; S.selectedConn = c; S.selectedSeat = null;
+  S.selectedPay = S.payMethods[0]?.id || 'card';
+  document.getElementById('mRoute').textContent = `${c.fromStation} → ${c.toStation}`;
+  document.getElementById('mSummary').innerHTML = `
+    <div class="cr"><span class="cl">Zug</span><span class="cv">${c.trainNumber} · ${c.operator}</span></div>
+    <div class="cr"><span class="cl">Abfahrt</span><span class="cv">${fmtDT(c.departureTime)}</span></div>
+    <div class="cr"><span class="cl">Ankunft</span><span class="cv">${fmtDT(c.arrivalTime)}</span></div>
+    <div class="cr"><span class="cl">Reisezeit</span><span class="cv">${c.duration}</span></div>
+    <div class="cr"><span class="cl">Klasse</span><span class="cv">${c.seatClass}. Klasse · ${c.passengers} Person(en)</span></div>
+    <div class="cr"><span class="cl">Basispreis</span><span class="cv">€${c.priceBreakdown.baseFare}</span></div>
+    <div class="cr"><span class="cl">Steuern & Gebühren</span><span class="cv">€${c.priceBreakdown.taxes + c.priceBreakdown.serviceFee}</span></div>
+    <div class="cr"><span class="cl">Sitzreservierung</span><span class="cv">€${c.priceBreakdown.seatReservation}</span></div>
+    <div class="cr total"><span class="cl">Gesamtpreis</span><span class="cv big">€${c.price}</span></div>`;
+
+  // Seat grid
+  const takenSeats = new Set(Array.from({length:8},()=>`${Math.floor(Math.random()*8)+1}${String.fromCharCode(65+Math.floor(Math.random()*6))}`));
+  let sg = '';
+  for (let row=1; row<=8; row++) {
+    ['A','B','C'].forEach(col=>{
+      const sn=`${row}${col}`, taken=takenSeats.has(sn);
+      sg+=`<button class="seat${taken?' taken':''}" ${taken?'disabled':''} onclick="pickSeat(this,'${sn}')">${sn}</button>`;
+    });
+    if (row===4) sg+=`<div class="aisle"></div>`;
+    ['D','E','F'].forEach(col=>{
+      const sn=`${row}${col}`, taken=takenSeats.has(sn);
+      sg+=`<button class="seat${taken?' taken':''}" ${taken?'disabled':''} onclick="pickSeat(this,'${sn}')">${sn}</button>`;
+    });
+  }
+  document.getElementById('seatGrid').innerHTML = sg;
+
+  // Payment methods
+  document.getElementById('payGrid').innerHTML = S.payMethods.map(m=>`
+    <button class="pay-opt${m.id===S.selectedPay?' sel':''}" data-mid="${m.id}" onclick="pickPay(this)">
+      <span class="pay-icon">${m.icon}</span>${m.label}
+    </button>`).join('');
+
+  document.getElementById('checkoutOverlay').classList.remove('hid');
+}
+function closeModal() { document.getElementById('checkoutOverlay').classList.add('hid'); }
+function pickPay(btn) {
+  document.querySelectorAll('.pay-opt').forEach(b=>b.classList.remove('sel'));
+  btn.classList.add('sel'); S.selectedPay = btn.dataset.mid;
+}
+function pickSeat(btn, sn) {
+  document.querySelectorAll('.seat.sel').forEach(b=>b.classList.remove('sel'));
+  btn.classList.add('sel'); S.selectedSeat = sn;
+}
+async function confirmBook() {
+  if (!S.selectedConn) return;
+  const btn = document.getElementById('confirmBtn');
+  btn.disabled=true; btn.innerHTML='<span class="spinner"></span> Zahlung wird verarbeitet…';
+  try {
+    const r = await api('POST','/checkout',{
+      connection: S.selectedConn, paymentMethod: S.selectedPay, seatPreference: S.selectedSeat
+    });
+    closeModal();
+    toast('✅ '+r.message,'success',5000);
+    api('GET','/auth/me').then(u=>{ S.user.loyaltyPoints=u.loyaltyPoints; localStorage.setItem('tc_user',JSON.stringify(S.user)); updateNav(); }).catch(()=>{});
+    setTimeout(()=>goAuth('tickets'),1800);
+  } catch(e) { toast('Buchungsfehler: '+e.message,'error'); }
+  finally { btn.disabled=false; btn.textContent='Jetzt kostenpflichtig buchen'; }
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+//  TICKETS
+// ═══════════════════════════════════════════════════════════════════════════
+async function loadTickets() {
+  if (!S.token) { go('login'); return; }
+  document.getElementById('ticketList').innerHTML='<div class="loading"><div class="spinner"></div></div>';
+  try {
+    const tix = await api('GET','/tickets');
+    if (!tix.length) {
+      document.getElementById('ticketList').innerHTML=`<div class="empty"><div class="ico">🎫</div><h3>Noch keine Tickets</h3><p>Suche eine Verbindung und buche dein erstes Ticket.</p><button class="auth-sub-btn" style="margin-top:1rem;max-width:200px" onclick="go('home')">Jetzt suchen</button></div>`;
+      return;
+    }
+    document.getElementById('ticketList').innerHTML = tix.map(t=>`
+      <div class="tc" id="tc-${t.id}">
+        <div class="tc-hd">
+          <div>
+            <div class="tc-route">${t.fromStation} → ${t.toStation}</div>
+            <div style="font-size:.77rem;color:rgba(245,240,232,.55);margin-top:.2rem">${t.trainNumber} · ${t.operator}</div>
+          </div>
+          <div>
+            <div class="tc-code">${t.ticketCode}</div>
+            <div style="font-size:.7rem;color:rgba(245,240,232,.4);text-align:right;margin-top:.2rem">${t.seatNumber?'Sitz '+t.seatNumber:''}</div>
+          </div>
+        </div>
+        <div class="tc-body">
+          <div class="tc-f"><label>Abfahrt</label><span>${fmtDT(t.departureTime)}</span></div>
+          <div class="tc-f"><label>Ankunft</label><span>${fmtDT(t.arrivalTime)}</span></div>
+          <div class="tc-f"><label>Reisezeit</label><span>${t.duration}</span></div>
+          <div class="tc-f"><label>Klasse</label><span>${t.seatClass}. Klasse</span></div>
+          <div class="tc-f"><label>Personen</label><span>${t.passengers}</span></div>
+          <div class="tc-f"><label>Preis</label><span>€${t.price}</span></div>
+          <div class="tc-f"><label>Zahlung</label><span>${payLabel(t.paymentMethod)}</span></div>
+          <div class="tc-f"><label>Status</label><span class="${t.status==='confirmed'?'status-ok':'status-cx'}">${t.status==='confirmed'?'✓ Bestätigt':'✗ Storniert'}</span></div>
+          ${t.refundAmount!=null?`<div class="tc-f"><label>Erstattung</label><span>€${t.refundAmount}</span></div>`:''}
+        </div>
+        ${t.amenities?.length?`<div class="tc-amenities">${t.amenities.map(a=>`<span class="am">${amIcon(a)}</span>`).join('')}</div>`:''}
+        <div class="track-events" id="trk-${t.id}">
+          <div class="track-title">Live-Tracking</div>
+          <div style="color:var(--gray);font-size:.82rem">Lade Tracking…</div>
+        </div>
+        <div class="tc-foot">
+          <span>Gebucht: ${fmtDate(t.createdAt)}</span>
+          <span>ID: ${t.paymentId||'—'}</span>
+        </div>
+        ${t.status==='confirmed'?`<div class="tc-actions">
+          <button class="tc-btn" onclick="downloadTicket('${t.id}','${t.ticketCode}')">⬇ Ticket herunterladen</button>
+          <button class="tc-btn danger" onclick="openCancelModal('${t.id}','${t.fromStation}','${t.toStation}','${t.price}','${t.departureTime}')">✗ Stornieren</button>
+        </div>`:''}
+      </div>`).join('');
+
+    // Load tracking for each ticket
+    tix.forEach(t => loadTracking(t.id));
+  } catch(e) { toast(e.message,'error'); }
+}
+
+async function loadTracking(tid) {
+  try {
+    const d = await api('GET','/tracking/'+tid);
+    const el = document.getElementById('trk-'+tid);
+    if (!el) return;
+    let html = d.events.map(ev=>`
+      <div class="ev">
+        <div class="ev-dot"></div>
+        <div>
+          <strong>${ev.status}</strong> · ${ev.station}
+          ${ev.delay>0?`<span class="ev-delay"> (+${ev.delay} Min. Verspätung)</span>`:''}
+          <div style="font-size:.72rem;color:var(--gray)">${ev.time?fmtDT(ev.time):''}</div>
+        </div>
+      </div>`).join('');
+    if (d.currentDelay>0) html += `<div style="color:var(--red);font-size:.82rem;padding:.4rem 0">⚠️ Aktuelle Verspätung: ${d.currentDelay} Minuten</div>`;
+    if (d.euCompensation?.eligible) html += `
+      <div class="eu-comp">
+        <strong>⚖️ EU-Entschädigungsanspruch: ${d.euCompensation.percentage}% (€${d.euCompensation.amount})</strong><br>
+        <a href="${d.euCompensation.url}" target="_blank" style="color:var(--blue)">Entschädigungsformular einreichen →</a>
+      </div>`;
+    el.innerHTML = `<div class="track-title">Live-Tracking</div>${html}`;
+  } catch{}
+}
+
+function openCancelModal(id, from, to, price, dep) {
+  S.cancelTicketId = id;
+  document.getElementById('cRoute').textContent = `${from} → ${to}`;
+  const hours = (new Date(dep)-new Date())/3600000;
+  const refund = hours>24 ? price : hours>2 ? Math.round(price*0.5) : 0;
+  document.getElementById('cInfo').innerHTML = `<strong>Ticket €${price}</strong><br><br>
+    ${hours>24 ? `<span class="pill pill-green">Volle Rückerstattung: €${price}</span>` :
+      hours>2  ? `<span class="pill pill-gold">50% Rückerstattung: €${refund}</span>` :
+                 `<span class="pill pill-red">Keine Rückerstattung (< 2h vor Abfahrt)</span>`}
+    <br><br>Bist du sicher?`;
+  document.getElementById('cancelOverlay').classList.remove('hid');
+}
+function closeCancelModal() { document.getElementById('cancelOverlay').classList.add('hid'); S.cancelTicketId=null; }
+async function doCancel() {
+  if (!S.cancelTicketId) return;
+  try {
+    const r = await api('POST',`/tickets/${S.cancelTicketId}/cancel`);
+    closeCancelModal(); toast(r.message,'success',6000); loadTickets();
+    if (r.refundAmount>0) { api('GET','/auth/me').then(u=>{ S.user.loyaltyPoints=u.loyaltyPoints; localStorage.setItem('tc_user',JSON.stringify(S.user)); updateNav(); }).catch(()=>{}); }
+  } catch(e) { toast(e.message,'error'); }
+}
+
+function downloadTicket(id, code) {
+  // In production: generate PDF via server
+  const el = document.createElement('a');
+  el.href = 'data:text/plain;charset=utf-8,' + encodeURIComponent(`TrainConnect Europe\nTicket: ${code}\nID: ${id}\n\nDieses Ticket gilt als Nachweis Ihrer Buchung.`);
+  el.download = `TrainConnect_${code}.txt`;
+  el.click();
+  toast('Ticket heruntergeladen');
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+//  PRICE ALERTS
+// ═══════════════════════════════════════════════════════════════════════════
+async function loadAlerts() {
+  if (!S.token) { go('login'); return; }
+  try {
+    const alerts = await api('GET','/alerts');
+    document.getElementById('alertList').innerHTML = alerts.length ? alerts.map(a=>`
+      <div class="alert-card">
+        <div>
+          <div class="alert-route">${a.fromName||a.fromId} → ${a.toName||a.toId}</div>
+          <div style="font-size:.78rem;color:var(--gray)">Aktiv seit ${fmtDate(a.createdAt)}</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:.75rem">
+          <span class="alert-price">Alarm bei €${a.targetPrice}</span>
+          <button class="del-btn" onclick="deleteAlert('${a.id}')">🗑</button>
+        </div>
+      </div>`).join('') :
+      `<div class="empty" style="padding:2rem"><div class="ico">🔔</div><h3>Keine Preisalarme</h3><p>Füge deinen ersten Preisalarm hinzu.</p></div>`;
+  } catch(e) { toast(e.message,'error'); }
+}
+function showAlertForm() { goAuth('alerts'); }
+async function addAlert() {
+  const fromId=document.getElementById('aFromId').value;
+  const toId=document.getElementById('aToId').value;
+  const fromName=document.getElementById('aFromInput').value;
+  const toName=document.getElementById('aToInput').value;
+  const price=parseFloat(document.getElementById('aPrice').value);
+  if (!fromId||!toId||!price) return toast('Bitte alle Felder ausfüllen','error');
+  try {
+    await api('POST','/alerts',{fromId,toId,fromName,toName,targetPrice:price});
+    document.getElementById('aPrice').value='';
+    toast('Preisalarm gesetzt!','success'); loadAlerts();
+  } catch(e) { toast(e.message,'error'); }
+}
+async function deleteAlert(id) {
+  try { await api('DELETE','/alerts/'+id); toast('Preisalarm gelöscht'); loadAlerts(); }
+  catch(e) { toast(e.message,'error'); }
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+//  ADMIN
+// ═══════════════════════════════════════════════════════════════════════════
+async function loadAdmin() {
+  if (!S.user||S.user.role!=='admin') return;
+  try {
+    const [stats, users] = await Promise.all([
+      api('GET','/admin/stats'), api('GET','/admin/users')
+    ]);
+
+    document.getElementById('aStats').innerHTML = `
+      <div class="stat"><div class="stat-l">Nutzer gesamt</div><div class="stat-v">${stats.users}</div></div>
+      <div class="stat"><div class="stat-l">Tickets verkauft</div><div class="stat-v">${stats.tickets}</div></div>
+      <div class="stat"><div class="stat-l">Umsatz</div><div class="stat-v">€${stats.revenue}</div></div>
+      <div class="stat"><div class="stat-l">Stornierungen</div><div class="stat-v">${stats.cancelled}</div></div>
+      <div class="stat"><div class="stat-l">Aktive Nutzer</div><div class="stat-v">${stats.activeUsers}</div></div>`;
+
+    // Charts
+    renderBarChart('opChart', stats.byOperator, stats.tickets);
+    renderBarChart('payChart', Object.fromEntries(Object.entries(stats.byPayment).map(([k,v])=>[payLabel(k),v])), stats.tickets);
+
+    // Recent tickets table
+    const rows = stats.recentTickets.map(t=>`<tr>
+      <td><strong>${t.ticketCode}</strong></td>
+      <td>${t.fromStation} → ${t.toStation}</td>
+      <td>${t.operator}</td>
+      <td>€${t.price}</td>
+      <td>${payLabel(t.paymentMethod)}</td>
+      <td>${fmtDate(t.createdAt)}</td>
+    </tr>`).join('');
+    document.getElementById('aTable').innerHTML = `<table>
+      <thead><tr><th>Code</th><th>Strecke</th><th>Betreiber</th><th>Preis</th><th>Zahlung</th><th>Datum</th></tr></thead>
+      <tbody>${rows||'<tr><td colspan="6" style="text-align:center;padding:2rem;color:var(--gray)">Noch keine Buchungen</td></tr>'}</tbody>
+    </table>`;
+
+    // Users table
+    document.getElementById('userCount').textContent = `(${users.length})`;
+    document.getElementById('aUsers').innerHTML = `<table>
+      <thead><tr><th>Name</th><th>E-Mail</th><th>Rolle</th><th>Tickets</th><th>Punkte</th><th>Registriert</th></tr></thead>
+      <tbody>${users.map(u=>`<tr>
+        <td><strong>${u.name}</strong></td><td>${u.email}</td>
+        <td><span class="pill ${u.role==='admin'?'pill-gold':'pill-green'}">${u.role}</span></td>
+        <td>${u.ticketCount}</td><td>⭐ ${u.loyaltyPoints}</td><td>${fmtDate(u.createdAt)}</td>
+      </tr>`).join('')}</tbody>
+    </table>`;
+  } catch(e) { toast(e.message,'error'); }
+}
+
+function renderBarChart(id, data, total) {
+  const sorted = Object.entries(data).sort((a,b)=>b[1]-a[1]).slice(0,6);
+  const max = sorted[0]?.[1]||1;
+  document.getElementById(id).innerHTML = sorted.map(([k,v])=>`
+    <div class="bar-item">
+      <div class="bar-label" title="${k}">${k}</div>
+      <div class="bar-track"><div class="bar-fill" style="width:${Math.round(v/max*100)}%"></div></div>
+      <div class="bar-val">${v}</div>
+    </div>`).join('') || '<div style="color:var(--gray);font-size:.82rem">Keine Daten</div>';
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+//  ABOUT
+// ═══════════════════════════════════════════════════════════════════════════
+async function loadAbout() {
+  try {
+    const ops = await api('GET','/operators');
+    document.getElementById('opsGrid').innerHTML = ops.map(o=>`
+      <div class="op-card"><span class="op-flag">${o.flag}</span><span>${o.operator}</span></div>`).join('');
+  } catch{}
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+//  LEGAL
+// ═══════════════════════════════════════════════════════════════════════════
+const LEGAL = {
+  fahrgastrechte: `
+    <h2>⚖️ EU-Fahrgastrechte</h2>
+    <div class="highlight">
+      Die EU-Fahrgastrechte-Verordnung (VO EU 2021/782) schützt dich bei Verspätungen und Zugausfällen auf allen europäischen Strecken.
+    </div>
+    <h2>Entschädigungsansprüche</h2>
+    <p><strong>Ab 60 Minuten Verspätung: 25 % des Fahrpreises</strong></p>
+    <p><strong>Ab 120 Minuten Verspätung: 50 % des Fahrpreises</strong></p>
+    <ul>
+      <li>Recht auf alternative Beförderung oder vollständige Fahrpreiserstattung bei voraussichtlich &gt; 60 Min. Verspätung</li>
+      <li>Hotelunterbringung bei Übernachtung durch Verspätung</li>
+      <li>Gilt im internationalen Eisenbahnverkehr sowie für alle gemäß VO (EU) 2021/782 erweiterten Strecken</li>
+    </ul>
+    <p>TrainConnect zeigt dir bei Verspätung über 60 Min. automatisch das Entschädigungsformular an. Die Entschädigung ist direkt beim jeweiligen Bahnunternehmen geltend zu machen.</p>
+    <h2>Entschädigung nach Land & Betreiber</h2>
+    <table class="rights-table">
+      <tr><th>Land</th><th>Betreiber</th><th>60 Min.</th><th>120 Min.</th><th>Formular</th></tr>
+      <tr><td>🇩🇪 Deutschland</td><td>DB</td><td>25%</td><td>50%</td><td><a href="https://www.bahn.de/hilfe/fahrgastrechte" target="_blank">bahn.de →</a></td></tr>
+      <tr><td>🇨🇭 Schweiz</td><td>SBB</td><td>25%</td><td>50%</td><td><a href="https://www.sbb.ch/de/hilfe-und-kontakt/kundenservice/entschaedigungen.html" target="_blank">sbb.ch →</a></td></tr>
+      <tr><td>🇦🇹 Österreich</td><td>ÖBB</td><td>25%</td><td>50%</td><td><a href="https://www.oebb.at/de/reise-information/fahrgastrechte" target="_blank">oebb.at →</a></td></tr>
+      <tr><td>🇫🇷 Frankreich</td><td>SNCF</td><td>25%</td><td>50%</td><td><a href="https://www.sncf-connect.com/aide/mes-droits-de-voyageur" target="_blank">sncf.com →</a></td></tr>
+      <tr><td>🇮🇹 Italien</td><td>Trenitalia</td><td>25%</td><td>50%</td><td><a href="https://www.trenitalia.com/it/informazioni/Diritti_del_Viaggiatore.html" target="_blank">trenitalia.com →</a></td></tr>
+      <tr><td>🇬🇧 UK</td><td>Eurostar</td><td>25%</td><td>50%</td><td><a href="https://www.eurostar.com/uk-en/travel-info/travel-updates" target="_blank">eurostar.com →</a></td></tr>
+    </table>`,
+
+  datenschutz: `
+    <h2>🔐 Datenschutzerklärung (DSGVO)</h2>
+    <div class="highlight">TrainConnect Europe verarbeitet deine Daten gemäß der EU-Datenschutz-Grundverordnung (DSGVO).</div>
+    <h2>Verarbeitete Daten</h2>
+    <ul>
+      <li>Name und E-Mail-Adresse (zur Erfüllung des Nutzungsvertrags, Art. 6 Abs. 1 lit. b DSGVO)</li>
+      <li>Buchungsdetails zur Erbringung unserer Dienstleistung</li>
+      <li>IP-Adresse, Browser-Informationen (für Sicherheitszwecke)</li>
+    </ul>
+    <h2>Datenweitergabe</h2>
+    <p>Eine Datenweitergabe an Dritte erfolgt <strong>ausschließlich bei Strafverfolgung</strong>. Wir geben <strong>keine Daten zu Marketingzwecken</strong> weiter. Affiliate-Links zu Buchungsplattformen enthalten keine personenbezogenen Daten.</p>
+    <h2>Deine Rechte</h2>
+    <ul>
+      <li><strong>Art. 15 DSGVO</strong> — Auskunftsrecht über gespeicherte Daten</li>
+      <li><strong>Art. 17 DSGVO</strong> — Löschungsrecht ("Recht auf Vergessenwerden")</li>
+      <li><strong>Art. 20 DSGVO</strong> — Datenportabilität in maschinenlesbarem Format</li>
+    </ul>
+    <p>Für Datenschutzanfragen: <strong>datenschutz@trainconnect.eu</strong></p>
+    <p>Die EU-Kommission stellt eine Plattform zur Online-Streitbeilegung bereit: <a href="https://ec.europa.eu/consumers/odr" target="_blank">ec.europa.eu/consumers/odr</a></p>`,
+
+  agb: `
+    <h2>📄 Allgemeine Nutzungsbedingungen</h2>
+    <p>Diese Nutzungsbedingungen regeln die Nutzung des Dienstes TrainConnect Europe. Mit der Nutzung des Dienstes stimmst du diesen Bedingungen zu.</p>
+    <h2>Leistungsumfang</h2>
+    <p>TrainConnect ist eine direkte Buchungsplattform für Zugreisen in Europa. Alle Verbindungen, Preise und Tickets werden direkt auf dieser Plattform verarbeitet. Du wirst niemals zu einer externen Buchungsseite weitergeleitet.</p>
+    <h2>Nutzungsalter</h2>
+    <p>Die Nutzung von TrainConnect ist Personen ab 16 Jahren gestattet. Unter 16-Jährige benötigen die Zustimmung eines Erziehungsberechtigten.</p>
+    <h2>Haftungsausschluss</h2>
+    <p>TrainConnect übernimmt keine Haftung für Verspätungen, Zugausfälle, verpasste Anschlüsse, Stornierungen oder sonstige Störungen im Bahnbetrieb. Diese liegen ausschließlich im Verantwortungsbereich der jeweiligen Eisenbahnunternehmen.</p>
+    <h2>Stornierung & Erstattung</h2>
+    <ul>
+      <li>Stornierung &gt; 24h vor Abfahrt: Volle Rückerstattung</li>
+      <li>Stornierung 2–24h vor Abfahrt: 50% Rückerstattung</li>
+      <li>Stornierung &lt; 2h vor Abfahrt: Keine Rückerstattung</li>
+    </ul>
+    <h2>Geltendes Recht</h2>
+    <p>Es gilt EU-Recht. Ausschließlicher Gerichtsstand für Streitigkeiten ist der Firmensitz (wird nach Gründung eingetragen), soweit gesetzlich zulässig.</p>
+    <p><em>TrainConnect Europe behält sich vor, diese Bedingungen jederzeit zu ändern. Änderungen werden auf dieser Seite bekannt gegeben.</em></p>`,
+
+  impressum: `
+    <h2>🏢 Impressum</h2>
+    <div class="highlight">Angaben gemäß § 5 TMG / Art. 13 DSGVO</div>
+    <p><strong>TrainConnect Europe</strong><br>
+    Inhaber: (Name wird nach Gründung eingetragen)<br>
+    Adresse: (genaue Adresse nach Firmengründung)<br>
+    E-Mail: datenschutz@trainconnect.eu</p>
+    <h2>Verantwortlich für den Inhalt</h2>
+    <p>Als Diensteanbieter sind wir für eigene Inhalte verantwortlich. Als Aggregator sind wir nicht verpflichtet, übermittelte oder gespeicherte fremde Informationen zu überwachen. Bei Bekanntwerden von Rechtsverletzungen werden wir diese Inhalte umgehend entfernen.</p>
+    <h2>Haftung für Links</h2>
+    <p>Unser Angebot enthält Links zu externen Webseiten Dritter, auf deren Inhalte wir keinen Einfluss haben. Für die Inhalte der verlinkten Seiten ist stets der jeweilige Anbieter verantwortlich.</p>
+    <h2>Streitschlichtung</h2>
+    <p>Die EU-Kommission stellt eine Plattform zur Online-Streitbeilegung (OS) bereit: <a href="https://ec.europa.eu/consumers/odr" target="_blank">https://ec.europa.eu/consumers/odr</a></p>`
+};
+
+function legalTab(tab, btn) {
+  S.legalTab = tab;
+  document.querySelectorAll('.leg-tab').forEach(b=>b.classList.remove('act'));
+  btn.classList.add('act');
+  renderLegal(tab);
+}
+function renderLegal(tab) {
+  document.getElementById('legalContent').innerHTML = LEGAL[tab]||'';
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+//  POPULAR + OPS BAND
+// ═══════════════════════════════════════════════════════════════════════════
+async function loadPopular() {
+  try {
+    const routes = await api('GET','/popular-routes');
+    document.getElementById('chips').innerHTML = routes.map(r=>`
+      <button class="chip" onclick="fillRoute('${r.from}','${r.fromName}','${r.to}','${r.toName}')">
+        ${r.fromName.split(' ')[0]} → ${r.toName.split(' ')[0]}
+        <span class="chip-price">ab €${r.price}</span>
+      </button>`).join('');
+  } catch{}
+}
+function fillRoute(fid, fn, tid, tn) {
+  document.getElementById('fromInput').value=fn; document.getElementById('fromId').value=fid;
+  document.getElementById('toInput').value=tn;  document.getElementById('toId').value=tid;
+}
+async function loadOpsBand() {
+  try {
+    const ops = await api('GET','/operators');
+    const html = ops.map(o=>`<span class="op-item"><span class="flag">${o.flag}</span>${o.operator}</span>`).join('');
+    document.getElementById('opsBand').innerHTML = html + html; // duplicate for infinite scroll
+  } catch{}
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+//  UTILS
+// ═══════════════════════════════════════════════════════════════════════════
+function fmtTime(iso) { return new Date(iso).toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'}); }
+function fmtDate(iso) { return new Date(iso).toLocaleDateString('de-DE',{day:'2-digit',month:'2-digit',year:'numeric'}); }
+function fmtDT(iso)   { return new Date(iso).toLocaleString('de-DE',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'}); }
+const PAY_LABELS = { card:'💳 Kreditkarte', paypal:'🅿️ PayPal', apple_pay:'🍎 Apple Pay', google_pay:'🟢 Google Pay', twint:'🇨🇭 TWINT', sepa:'🏦 SEPA', crypto_btc:'₿ Bitcoin', crypto_eth:'⟠ Ethereum', crypto_usdt:'💵 USDT' };
+function payLabel(m) { return PAY_LABELS[m]||m; }
+const AM_ICONS = { wifi:'📶 WLAN', dining:'🍽 Speisewagen', sleepingCar:'🛏 Schlafwagen', couchette:'🛋 Liegewagen', powerOutlets:'🔌 Steckdosen', bikeStorage:'🚲 Fahrrad', wheelchair:'♿ Rollstuhl', quiet:'🔇 Ruhezone', airConditioning:'❄️ Klima' };
+function amIcon(k) { return AM_ICONS[k]||k; }
+
+// ═══════════════════════════════════════════════════════════════════════════
+//  INIT
+// ═══════════════════════════════════════════════════════════════════════════
+// Default date = tomorrow
+const tmr = new Date(); tmr.setDate(tmr.getDate()+1);
+document.getElementById('dateInput').value = tmr.toISOString().split('T')[0];
+document.getElementById('dateInput').min   = new Date().toISOString().split('T')[0];
+
+updateNav();
+loadPopular();
+loadOpsBand();
+renderLegal('fahrgastrechte');
+
+// Load payment methods
+api('GET','/payment-methods').then(d=>{ S.payMethods=d; }).catch(()=>{ S.payMethods=[{id:'card',label:'Kreditkarte',icon:'💳'}]; });
+</script>
+</body>
+</html>
